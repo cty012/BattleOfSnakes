@@ -54,7 +54,7 @@ class Apple:
 
     def show(self, ui, *, pan=(0, 0)):
         ui.show_circle(
-            utils.add(self.get_rect()[0], (self.grid_size // 2, self.grid_size // 2)),
+            utils.add(self.get_rect()[0], ((self.grid_size + 1) // 2, (self.grid_size + 1) // 2)),
             self.radius, color=self.color, pan=pan)
 
 
@@ -62,9 +62,9 @@ class Map:
     def __init__(self, args, pos, *, dim=(30, 30), max_apples=3, align=(0, 0)):
         self.args = args
         self.dim = dim
-        self.grid_size = 51
-        self.grid_inner_size = 40
-        self.apple_radius = 12
+        self.grid_size = 31
+        self.grid_inner_size = 22
+        self.apple_radius = 6
         self.pos = utils.top_left(pos, self.size(), align=align)
         self.pan = [0, 0]
 

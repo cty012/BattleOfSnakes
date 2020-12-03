@@ -20,7 +20,7 @@ class FrontEnd:
         self.screen.set_alpha(None)
         self.event = e.Event(self.args)
         self.ui = u.UI(self.args, self.window, self.screen)
-        pygame.display.set_caption('Py-Generals')
+        pygame.display.set_caption(self.args.title)
         try:
             pygame.display.set_icon(self.ui.image.get('icon.png'))
         except:

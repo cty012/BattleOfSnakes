@@ -47,7 +47,7 @@ class App:
         self.running = False
 
 
-def launch(args=a.Args()):
+def launch(args=a.Args('Game')):
     app = App(f.FrontEnd(args), b.BackEnd(args), args)
     app.prepare()
     app.run()

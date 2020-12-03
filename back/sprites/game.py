@@ -25,7 +25,7 @@ class Game:
         if not self.status['running']:
             return [None]
 
-        if self.timer.get_time() > 0.25:
+        if self.timer.get_time() > 0.2:
             # reset timer
             self.timer.clear()
             self.timer.start()
