@@ -2,6 +2,7 @@ import json
 
 import back.game.map as m
 import back.game.player as p
+from network.discovery import DiscoveryBeacon, DiscoveryMirror
 import utils.stopwatch as sw
 
 
@@ -9,6 +10,7 @@ class Game:
     def __init__(self, mode, connect):
         self.mode = mode  # {'num-players', 'size', 'threshold', 'max-apples'}
         self.connect = connect
+        self.mirror = DiscoveryMirror()
 
         self.map = m.Map(dim=self.mode['size'], max_apples=self.mode['max-apples'])
         self.players = [
