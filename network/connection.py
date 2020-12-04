@@ -15,15 +15,19 @@ class MessageParser:
 
 
 class Connection:
-    def __init__(
-            self,
-            conn: socket.socket,
-            parser: MessageParser,
-            *,
-            recv_chunk=1024,
-            timeout: Number_t = 1.0,
-            exc_meltdown: Tuple[int, Number_t] = (3, 2.0)
-            ) -> None:
+    def __init__(self, conn, parser, *, recv_chunk=1024, timeout=1.0, exc_meltdown=(3, 2.0)) -> None:
+        """
+        :param conn: Socket of the connection
+        :type conn: socket.socket
+        :param parser:
+        :type parser: MessageParser
+        :param recv_chunk:
+        :type recv_chunk: int
+        :param timeout:
+        :type timeout: Union[int, float]
+        :param exc_meltdown:
+        :type exc_meltdown: Tuple[int, Union[int, float]]
+        """
         self.conn = conn
         self.parser = parser
         self.recv_chunk = recv_chunk
@@ -32,14 +36,20 @@ class Connection:
 
         self.sendbuf = b''
         self.recvbuf = b''
-        self.recv_thread: Optional[threading.Thread] = None
+        self.recv_thread = None
         self.sending = False
         self.recving = False
         self.stopping = False
 
         self.recvqueue = deque()
 
-    def send(self, msg: Optional[bytes] = None) -> int:
+    def send(self, msg: Optional[bytes] = None):
+        """
+        :param msg:
+        :type msg: Optional[bytes]
+        :returns: status (0: normal, >0: error)
+        :rtype: int
+        """
         if self.stopping or not self.sending:
             return 1
         if msg is not None:

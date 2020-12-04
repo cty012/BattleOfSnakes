@@ -1,3 +1,4 @@
+import back.game.server as s
 import back.sprites.component as c
 import utils.fonts as f
 
@@ -28,9 +29,10 @@ class Scene:
 
     def execute(self, name):
         if name == 'sing':
-            return ['game', {'mode': 'sing'}]
+            s.Server({'version': 'sing'}).start()
+            return ['game', '0']
         elif name == 'mult':
-            return ['game', {'mode': 'mult'}]
+            return ['room_server']
         elif name == 'back':
             return ['menu']
         return [None]
