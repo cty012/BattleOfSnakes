@@ -5,11 +5,14 @@ class Parser:
     def _parse(self):
         if len(self.bytes) < 10:
             return None
-        length, bytes_rest = int(self.bytes[:10].decode('utf-8')), self.bytes[10:]
-        if len(bytes_rest) < length:
+        try:
+            length, bytes_rest = int(self.bytes[:10].decode('utf-8')), self.bytes[10:]
+            if len(bytes_rest) < length:
+                return None
+            result, self.bytes = bytes_rest[:length].decode('utf-8'), bytes_rest[length:]
+            return result
+        except:
             return None
-        result, self.bytes = bytes_rest[:length].decode('utf-8'), bytes_rest[length:]
-        return result
 
     def parse(self, new_bytes):
         self.bytes += new_bytes

@@ -1,16 +1,17 @@
 import json
+import socket
+import threading
 
 import back.game.map as m
 import back.game.player as p
-from network.discovery import DiscoveryBeacon, DiscoveryMirror
 import utils.stopwatch as sw
+from utils.parser import Parser
 
 
 class Game:
-    def __init__(self, mode, connect):
-        self.mode = mode  # {'num-players', 'size', 'threshold', 'max-apples'}
-        self.connect = connect
-        self.mirror = DiscoveryMirror()
+    def __init__(self, mode, clients):
+        self.mode = mode  # {'version', 'num-players', 'size', 'threshold', 'max-apples'}
+        self.clients = clients
 
         self.map = m.Map(dim=self.mode['size'], max_apples=self.mode['max-apples'])
         self.players = [
@@ -24,16 +25,18 @@ class Game:
         # timer
         self.timer = sw.Stopwatch()
         self.timer.start()
+        self.send_all(json.dumps({'tag': 'status', 'status': self.get_status()}, separators=(',', ':')))
 
     def process(self):
-        self.send_all(json.dumps(self.get_status(), separators=(',', ':')))
+        if self.timer.get_time() < 0.2:
+            return [None]
+
+        self.send_all(json.dumps({'tag': 'status', 'status': self.get_status()}, separators=(',', ':')))
 
         # check if game has already ended
         if not self.status['running']:
             return [None]
 
-        if self.timer.get_time() < 0.2:
-            return [None]
 
         # reset timer
         self.timer.clear()
@@ -42,7 +45,7 @@ class Game:
         # check if game ends
         self.check_alive()
         if len(self.survivors()) <= self.mode['threshold']:
-            print('Game ends')
+            self.send_all(json.dumps({'tag': 'end-game'}))
             self.status['running'] = False
             return ['end']
 
@@ -51,7 +54,7 @@ class Game:
             player.move()
             remove_list = []
             for apple in self.map.apples:
-                if apple.grid in player.grids:
+                if apple in player.grids:
                     player.energy += 1
                     remove_list.append(apple)
             for apple in remove_list:
@@ -59,6 +62,8 @@ class Game:
 
         # refill apples
         self.map.generate_apples(self.survivors())
+
+        return [None]
 
     def execute(self, player_id, command):
         if command[0] == 'move':
@@ -102,22 +107,34 @@ class Game:
     def get_status(self):
         return {
             'map': self.map.get_status(),
-            'players': {player: player.get_status() for player in self.players if player.alive}
+            'players': {i: player.get_status() for i, player in enumerate(self.players) if player.alive}
         }
 
-    def send(self, msg, client_id):
-        # TODO: send individual msg to client
-        pass
+    def send(self, msg, id):
+        msg_b = bytes(msg, encoding='utf-8')
+        self.clients[id][1].send(bytes(f'{len(msg_b):10}', encoding='utf-8') + msg_b)
 
     def send_all(self, msg):
-        # TODO: send group msg to all clients
-        pass
+        msg_b = bytes(msg, encoding='utf-8')
+        for id in range(len(self.clients)):
+            self.clients[id][1].send(bytes(f'{len(msg_b):10}', encoding='utf-8'))
+            self.clients[id][1].send(msg_b)
 
     def receive(self, player_id):
-        def func():
-            while True:
-                received_string = '{"tag":"command","command":[null]}'
-                msg = json.loads(received_string)
+        parser = Parser()
+        while self.players[player_id].alive:
+            # receive and parse msg
+            try:
+                msg_strs = parser.parse(self.clients[player_id][1].recv(1 << 20))
+            except socket.timeout:
+                print('timeout')
+                continue
+            except json.decoder.JSONDecodeError:
+                print('\tJSON Decode Error!')
+                continue
+            # deal with msg
+            for msg_str in msg_strs:
+                msg = json.loads(msg_str)
                 if msg['tag'] == 'command':
                     self.execute(player_id, msg['command'])
-        return func
+        print(f'THREAD ENDS: game.game.receive(player_id={player_id})')

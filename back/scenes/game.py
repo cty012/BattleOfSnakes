@@ -4,12 +4,13 @@ import back.sprites.menus.game_menu as gm
 
 
 class Scene:
-    def __init__(self, args, mode, id):
+    def __init__(self, args, mode, id, client):
         self.args = args
         self.mode = mode  # {'num-players', 'size', 'threshold', 'max-apples'}
         self.id = id
+        self.client = client
         self.background = c.Component(lambda ui: ui.show_div((0, 0), self.args.size, color=(60, 179, 113)))
-        self.game = g.Game(self.args, self.mode, self.id, self.mode['threshold'])
+        self.game = g.Game(self.args, self.mode, self.id, self.client)
         self.game_menu = gm.GameMenu(self.args, self.args.get_pos(1, 1), align=(1, 1))
 
     def process_events(self, events):

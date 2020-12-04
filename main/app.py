@@ -23,6 +23,7 @@ class App:
             self.set_fps(80)
             self.render()
             self.events()
+        print(f'MAIN THREAD ENDS')
 
     def events(self):
         events = self.front_end.get_events()
@@ -47,7 +48,8 @@ class App:
         self.running = False
 
 
-def launch(args=a.Args('Game')):
+def launch(args=None):
+    args = a.Args('Game') if args is None else args
     app = App(f.FrontEnd(args), b.BackEnd(args), args)
     app.prepare()
     app.run()

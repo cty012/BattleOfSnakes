@@ -99,7 +99,7 @@ class Map:
     def set_status(self, status):
         for apple in self.apples:
             self.steve_jobs.back(apple)
-        for grid in status['grids']:
+        for grid in status['apples']:
             self.apples.append(self.steve_jobs.get(grid))
 
     def show(self, ui, *, pan=(0, 0)):

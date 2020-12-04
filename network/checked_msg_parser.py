@@ -1,7 +1,4 @@
-from typing import *
 import hashlib
-
-from ..utils import *
 
 
 MD5_SIZE = 16
