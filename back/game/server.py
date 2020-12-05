@@ -53,6 +53,7 @@ class Server:
         while self.status == 'accepting':
             try:
                 client_socket, address = self.server.accept()
+                client_socket.settimeout(0.3)
                 self.clients.append([address[0], client_socket])
                 threading.Thread(
                     target=self.receive, args=(address[0], client_socket),
@@ -65,6 +66,7 @@ class Server:
             if self.mode['version'] == 'sing' and len(self.clients) == 1:
                 break
         self.status = 'game'
+        self.mirror.stop()
         self.mode['num-players'] = len(self.clients)
         self.game = g.Game(self.mode, self.clients)
         self.send_all(json.dumps({'tag': 'mode', 'mode': self.mode}))

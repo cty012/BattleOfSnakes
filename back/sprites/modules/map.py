@@ -1,4 +1,5 @@
 import back.sprites.modules.apple as a
+import front
 import utils.functions as utils
 
 
@@ -50,6 +51,21 @@ class Map:
                 for j in range(self.dim[1])
             ] for i in range(self.dim[0])
         ]
+        self.board_ui = front.new_ui(self.args, self.size())
+
+        # show blocks
+        for row in self.blocks:
+            for block in row:
+                block.show(self.board_ui)
+
+        # show grid
+        (x_min, y_min), (x_max, y_max) = (0, 0), self.size()
+        step = self.grid_size
+        for col in range(self.dim[0] + 1):
+            self.board_ui.show_line((x_min + col * step, y_min), (x_min + col * step, y_max))
+        for row in range(self.dim[1] + 1):
+            self.board_ui.show_line((x_min, y_min + row * step), (x_max, y_min + row * step))
+
         self.apples = []
         self.max_apples = max_apples
         self.steve_jobs = a.SteveJobs(self.args, self.dim, self.grid_size, self.apple_radius, max_size=self.max_apples)
@@ -103,18 +119,8 @@ class Map:
             self.apples.append(self.steve_jobs.get(grid))
 
     def show(self, ui, *, pan=(0, 0)):
-        # show blocks
-        for row in self.blocks:
-            for block in row:
-                block.show(ui, pan=utils.add(self.pos, self.pan, pan))
-
-        # show grid
-        [[x_min, y_min], [x_max, y_max]] = self.get_rect(pan=pan)
-        step = self.grid_size
-        for col in range(self.dim[0] + 1):
-            ui.show_line((x_min + col * step, y_min), (x_min + col * step, y_max))
-        for row in range(self.dim[1] + 1):
-            ui.show_line((x_min, y_min + row * step), (x_max, y_min + row * step))
+        # show board
+        ui.show_ui(self.pos, self.board_ui, pan=utils.add(self.pan, pan))
 
         # show apples
         for apple in self.apples:

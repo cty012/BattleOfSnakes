@@ -5,13 +5,30 @@ import front.image as i
 import utils.functions as utils
 
 
+class StupidStub:
+    def get_size(self, *a, **kw):
+        pass  # Does nothing
+
+    def blit(self, *a, **kw):
+        pass  # Does nothing
+
+
+stupid_stub = StupidStub()
+
+
 class UI:
     def __init__(self, args, window, screen):
         self.args = args
         self.window = window
         self.screen = screen
+        self.size = self.screen.get_size()
         self.font = f.Font(self.args)
         self.image = i.Image(self.args)
+
+    @classmethod
+    def new(cls, args, size):
+        surface = pygame.Surface(size)
+        return cls(args, stupid_stub, surface)
 
     def clear(self):
         self.screen.fill((255, 255, 255))
@@ -92,3 +109,7 @@ class UI:
     def show_img_by_path(self, pos, path, *, align=(0, 0), pan=(0, 0)):
         img = self.image.get(path)
         self.show_img(pos, img, align=align, pan=pan)
+
+    def show_ui(self, pos, ui, *, pan=(0, 0), align=(0, 0)):
+        pos = utils.top_left(utils.add(pos, pan), ui.size, align=align)
+        self.screen.blit(ui.screen, pos)

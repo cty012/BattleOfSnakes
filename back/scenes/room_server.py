@@ -20,8 +20,6 @@ class Scene:
             'max-apples': 3
         }
 
-
-
         # gui
         self.background = c.Component(lambda ui: ui.show_div((0, 0), self.args.size, color=(60, 179, 113)))
         self.buttons = {

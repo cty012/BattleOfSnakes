@@ -31,12 +31,9 @@ class Game:
         if self.timer.get_time() < 0.2:
             return [None]
 
-        self.send_all(json.dumps({'tag': 'status', 'status': self.get_status()}, separators=(',', ':')))
-
         # check if game has already ended
         if not self.status['running']:
             return [None]
-
 
         # reset timer
         self.timer.clear()
@@ -63,6 +60,7 @@ class Game:
         # refill apples
         self.map.generate_apples(self.survivors())
 
+        self.send_all(json.dumps({'tag': 'status', 'status': self.get_status()}, separators=(',', ':')))
         return [None]
 
     def execute(self, player_id, command):
@@ -127,7 +125,6 @@ class Game:
             try:
                 msg_strs = parser.parse(self.clients[player_id][1].recv(1 << 20))
             except socket.timeout:
-                print('timeout')
                 continue
             except json.decoder.JSONDecodeError:
                 print('\tJSON Decode Error!')

@@ -37,7 +37,7 @@ class GameMenu:
         pos = self.pos[0] + pan[0], self.pos[1] + pan[1]
         # container
         if win is None:
-            color, text = (192, 192, 192), 'PAUSED'
+            color, text = (192, 192, 192), 'OPTIONS'
         elif win:
             color, text = (255, 204, 204), 'YOU WIN'
         else:
