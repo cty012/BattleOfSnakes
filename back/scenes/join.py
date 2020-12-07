@@ -47,7 +47,7 @@ class Scene:
     def refresh(self):
         self.beacon.ping(True)
         self.rooms = []
-        for i, ((ip, _), info_b) in enumerate(list(self.beacon.responses.items()) * 4):
+        for i, ((ip, _), info_b) in enumerate(self.beacon.responses.items()):
             pos = self.btn_slots[i % len(self.btn_slots)]
             info = json.loads(info_b.decode('utf-8'))
             self.rooms.append(Room(self.args, pos, (ip, info['port']), info['name'], align=(1, 1)))
