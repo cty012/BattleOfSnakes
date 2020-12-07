@@ -25,10 +25,10 @@ class Button:
     def in_range(self, pos):
         return self.pos[0] < pos[0] < self.pos[0] + self.size[0] and self.pos[1] < pos[1] < self.pos[1] + self.size[1]
 
-    def show(self, ui):
+    def show(self, ui, *, pan=(0, 0)):
         if self.background is not None:
-            ui.show_div(self.pos, self.size, border=0, color=self.background)
-        ui.show_div(self.pos, self.size, border=self.border, color=self.color[0])
+            ui.show_div(self.pos, self.size, border=0, color=self.background, pan=pan)
+        ui.show_div(self.pos, self.size, border=self.border, color=self.color[0], pan=pan)
         center = self.pos[0] + self.size[0] // 2, self.pos[1] + self.size[1] // 2
         if self.text != '':
-            ui.show_text(center, self.text, self.font, color=self.color[1], save=self.save, align=(1, 1))
+            ui.show_text(center, self.text, self.font, color=self.color[1], save=self.save, align=(1, 1), pan=pan)

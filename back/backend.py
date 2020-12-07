@@ -15,8 +15,10 @@ class BackEnd:
             self.scene = s.menu.Scene(self.args)
         elif command[0] == 'mode':
             self.scene = s.mode.Scene(self.args)
-        elif command[0] == 'room_server':
-            self.scene = s.room_server.Scene(self.args)
+        elif command[0] == 'room':
+            self.scene = s.room.Scene(self.args, command[1], command[2], command[3])
+        elif command[0] == 'join':
+            self.scene = s.join.Scene(self.args)
         elif command[0] == 'game':
             self.scene = s.game.Scene(self.args, command[1], command[2], command[3])
         else:

@@ -11,8 +11,11 @@ class Scene:
             'new': c.Button(
                 (self.args.size[0] // 2, 300), (600, 80), 'New Game',
                 font=f.tnr(25), align=(1, 1), background=(210, 210, 210)),
+            'join': c.Button(
+                (self.args.size[0] // 2, 400), (600, 80), 'Join Game',
+                font=f.tnr(25), align=(1, 1), background=(210, 210, 210)),
             'quit': c.Button(
-                (self.args.size[0] // 2, 400), (600, 80), 'Exit',
+                (self.args.size[0] // 2, 500), (600, 80), 'Exit',
                 font=f.tnr(25), align=(1, 1), background=(210, 210, 210)),
         }
 
@@ -26,6 +29,8 @@ class Scene:
     def execute(self, name):
         if name == 'new':
             return ['mode']
+        elif name == 'join':
+            return ['join']
         elif name == 'quit':
             return ['quit']
         return [None]

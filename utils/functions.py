@@ -1,5 +1,5 @@
-import random
 import re
+import threading
 
 
 # return the top-left corner of the rectangle
@@ -39,3 +39,12 @@ def to_str_time(hundredth_secs, *, connect=(':', ':')):
     seconds = (hundredth_secs % 6000) // 100
     decimals = hundredth_secs % 100
     return f'{minutes:02}{connect[0]}{seconds:02}{connect[1]}{decimals:02}'
+
+def synchronized(func):
+    func.__lock__ = threading.Lock()
+
+    def synced_func(*args, **kws):
+        with func.__lock__:
+            return func(*args, **kws)
+
+    return synced_func

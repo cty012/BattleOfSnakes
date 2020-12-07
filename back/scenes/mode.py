@@ -3,6 +3,7 @@ import socket
 
 import back.game.server as s
 import back.sprites.component as c
+from network.discovery import DiscoveryBeacon
 import utils.fonts as f
 from utils.parser import Parser
 
@@ -69,20 +70,41 @@ class Scene:
     def execute(self, name):
         if name == 'sing':
             # launch server
-            server = s.Server({
+            room_name = socket.gethostname()
+            server = s.Server(room_name, {
                 'version': 'sing',
                 'num-players': None,
                 'size': (30, 30),
                 'threshold': 0,
                 'max-apples': 3
-            }, from_app=True)
+            })
             server.start()
 
             # connect to server
             client = self.connect_to_server('127.0.0.1', server.port)
             return ['game', self.mode, 0, client]
         elif name == 'mult':
-            return ['room', True]
+            # launch server
+            room_name = socket.gethostname()
+            server = s.Server(room_name, {
+                'version': 'mult',
+                'num-players': None,
+                'size': (30, 30),
+                'threshold': 0,
+                'max-apples': 3
+            })
+            server.start()
+
+            # discover the server
+            beacon = DiscoveryBeacon('224.0.3.101', list(range(5000, 5100)), b'battleofsnakes')
+            beacon.start()
+            while True:
+                beacon.ping(True)
+                for (ip, port), info_b in beacon.responses.items():
+                    info = json.loads(info_b.decode('utf-8'))
+                    if info['name'] == room_name:
+                        beacon.stop(clear=True, cb=lambda a, b: print('BEACON ENDS: scene=mode'))
+                        return ['room', room_name, (ip, info['port']), server]
         elif name == 'back':
             return ['menu']
         return [None]

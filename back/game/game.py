@@ -14,13 +14,23 @@ class Game:
         self.clients = clients
 
         self.map = m.Map(dim=self.mode['size'], max_apples=self.mode['max-apples'])
+        init_grids = [
+            [(1, i) for i in range(1, 4)],
+            [(self.mode['size'][0] - 2, self.mode['size'][1] - i - 1) for i in range(1, 4)],
+            [(self.mode['size'][0] - i - 1, 1) for i in range(1, 4)],
+            [(i, self.mode['size'][1] - 2) for i in range(1, 4)]
+        ]
         self.players = [
-            p.Player(i, grids=[(2 * i + 1, j) for j in range(1, 4)])
+            p.Player(i, grids=init_grids[i])
             for i in range(self.mode['num-players'])
         ]
         self.map.generate_apples(self.players)
 
         self.status = {'running': True, 'connect': {i: True for i in range(self.mode['num-players'])}}
+
+        # receive
+        for id in range(self.mode['num-players']):
+            threading.Thread(target=self.receive, args=(id,), name=f'server-recv{id}', daemon=True).start()
 
         # timer
         self.timer = sw.Stopwatch()
@@ -101,6 +111,9 @@ class Game:
             new_heads[target] = player
         for loser in losers:
             loser.alive = False
+            for grid in loser.grids:
+                if grid not in self.map.apples:
+                    self.map.apples.append(grid)
 
     def get_status(self):
         return {

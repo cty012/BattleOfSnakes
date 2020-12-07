@@ -112,9 +112,11 @@ class Map:
         self.pan[0] = utils.min_max(self.pan[0] - speed * direction[0], -self.size(0) // 2, self.size(0) // 2)
         self.pan[1] = utils.min_max(self.pan[1] - speed * direction[1], -self.size(1) // 2, self.size(1) // 2)
 
+    @utils.synchronized
     def set_status(self, status):
         for apple in self.apples:
             self.steve_jobs.back(apple)
+        self.apples = []
         for grid in status['apples']:
             self.apples.append(self.steve_jobs.get(grid))
 

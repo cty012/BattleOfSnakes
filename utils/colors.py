@@ -1,6 +1,11 @@
+import utils.functions as utils
+
+
 def rgb(r, g, b):
     return r, g, b
 
+
+white = rgb(255, 255, 255)
 
 p_red = rgb(255, 0, 0)
 p_blue = rgb(0, 0, 255)
@@ -14,3 +19,11 @@ p_lavender = rgb(190, 160, 220)
 
 def get_player_colors():
     return [p_red, p_blue, p_green, p_yellow]
+
+
+def add(color, num):
+    return rgb(*[utils.min_max(c + num, 0, 255) for c in color])
+
+
+def multiply(color, num):
+    return rgb(*[utils.min_max(c * num, 0, 255) for c in color])
