@@ -48,19 +48,18 @@ class Server:
             raise RuntimeError('No available port')
 
     def start(self):
-        threading.Thread(target=self.main_loop, name='server', daemon=True).start()
+        threading.Thread(target=self.main_loop, name='server-main', daemon=True).start()
 
     def main_loop(self):
         # accepting
         while self.status == 'accepting':
             try:
                 client_socket, address = self.server.accept()
-                print(address)
                 client_socket.settimeout(0.3)
                 self.clients.append([address[0], client_socket])
                 threading.Thread(
                     target=self.receive, args=(address[0], client_socket),
-                    name='server-recv', daemon=True
+                    name=f'server-recv-{address[0]}', daemon=True
                 ).start()
                 self.update_info()
                 print(f'SERVER establish connection to {address[0]}')

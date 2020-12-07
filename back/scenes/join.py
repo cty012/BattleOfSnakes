@@ -4,6 +4,7 @@ import back.sprites.component as c
 from network.discovery import DiscoveryBeacon
 import utils.fonts as f
 import utils.functions as utils
+import utils.stopwatch as sw
 
 
 class Scene:
@@ -24,9 +25,15 @@ class Scene:
                 (self.args.size[0] // 2, 650), (400, 60), 'Back', font=f.tnr(25),
                 save='tnr-25', align=(1, 1), background=(210, 210, 210)),
         }
+        self.refresh()
+        self.timer = sw.Stopwatch()
+        self.timer.start()
 
     def process_events(self, events):
-        self.refresh()
+        if self.timer.get_time() > 0.1:
+            self.timer.clear()
+            self.timer.start()
+            self.refresh()
         if events['mouse-left'] == 'down':
             for name in self.buttons:
                 if self.buttons[name].in_range(events['mouse-pos']):
@@ -38,6 +45,7 @@ class Scene:
 
     def execute(self, command):
         if command[0] == 'join':
+            self.beacon.stop(cb=lambda a, b: print(f'BEACON ENDS: scene=join'))
             return ['room', command[1].name, (command[1].ip, command[1].port), None]
         elif command[0] == 'back':
             self.beacon.stop(cb=lambda a, b: print(f'BEACON ENDS: scene=join'))
@@ -45,12 +53,12 @@ class Scene:
         return [None]
 
     def refresh(self):
-        self.beacon.ping(True)
         self.rooms = []
         for i, ((ip, _), info_b) in enumerate(self.beacon.responses.items()):
             pos = self.btn_slots[i % len(self.btn_slots)]
             info = json.loads(info_b.decode('utf-8'))
             self.rooms.append(Room(self.args, pos, (ip, info['port']), info['name'], align=(1, 1)))
+        self.beacon.ping(True)
 
     def show(self, ui):
         self.background.show(ui)

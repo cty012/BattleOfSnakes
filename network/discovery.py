@@ -108,7 +108,7 @@ class DiscoveryMirror:
         if self.running or self.stopping:
             return 1
         self.running = True
-        self.thread = threading.Thread(target=self.threadfunc)
+        self.thread = threading.Thread(target=self.threadfunc, daemon=True)
         self.thread.start()
         return 0
 
@@ -234,7 +234,7 @@ class DiscoveryBeacon:
         self.running = True
         if clear:
             self.responses = {}
-        self.thread = threading.Thread(target=self.threadfunc)
+        self.thread = threading.Thread(target=self.threadfunc, daemon=True)
         self.thread.start()
         return 0
 
