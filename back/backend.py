@@ -28,4 +28,6 @@ class BackEnd:
         self.scene.show(ui)
 
     def quit(self):
+        if hasattr(self.scene, 'close') and callable(self.scene.close):
+            self.scene.close()
         self.scene = None

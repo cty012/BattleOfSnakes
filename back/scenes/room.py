@@ -92,12 +92,15 @@ class Scene:
             print('CLIENT ENTER game...')
             return ['game', self.mode, self.id, self.client]
         elif name == 'back':
-            self.client.close()
-            if self.server is not None:
-                self.server.close()
+            self.close()
             print('CLIENT EXIT room...')
             return ['menu']
         return [None]
+
+    def close(self):
+        self.client.close()
+        if self.server is not None:
+            self.server.close()
 
     def show(self, ui):
         self.background.show(ui)

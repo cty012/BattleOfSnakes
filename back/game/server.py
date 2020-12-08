@@ -65,6 +65,8 @@ class Server:
                 print(f'SERVER establish connection to {address[0]}')
             except socket.timeout:
                 pass
+            except OSError:
+                print('THREAD ABORTS [OSError]: server.main_loop')
             if self.mode['version'] == 'sing' and len(self.clients) == 1:
                 self.status = 'game'
 
