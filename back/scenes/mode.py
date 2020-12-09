@@ -95,16 +95,8 @@ class Scene:
             })
             server.start()
 
-            # discover the server
-            beacon = DiscoveryBeacon('224.0.3.101', list(range(5000, 5100)), b'battleofsnakes')
-            beacon.start()
-            while True:
-                beacon.ping(True)
-                for (ip, port), info_b in beacon.responses.items():
-                    info = json.loads(info_b.decode('utf-8'))
-                    if info['name'] == room_name:
-                        beacon.stop(clear=True, cb=lambda a, b: print('BEACON ENDS: scene=mode'))
-                        return ['room', room_name, (ip, info['port']), server]
+            # we already know that the server is there
+            return ['room', room_name, ('127.0.0.1', server.port), server]
         elif name == 'back':
             return ['menu']
         return [None]
