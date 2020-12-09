@@ -28,10 +28,6 @@ class Game:
         self.send(json.dumps({'tag': 'start-game'}))
         threading.Thread(target=self.receive, name='client-recv', daemon=True).start()
 
-        # timer
-        self.timer = sw.Stopwatch()
-        self.timer.start()
-
     def process_events(self, events):
         # move the map
         self.map.process_events(events)

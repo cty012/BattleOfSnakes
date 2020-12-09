@@ -76,7 +76,7 @@ class Server:
             return
 
         # prepare for entering game
-        self.mirror.stop(cb=lambda: print(f'MIRROR ENDS: server({self.name})'))
+        self.mirror.stop(cb=lambda a, b: print(f'MIRROR ENDS: server({self.name})'))
         self.mode['num-players'] = len(self.clients)
         self.game = g.Game(self.mode, self.clients)
         self.send_all(json.dumps({'tag': 'mode', 'mode': self.mode}))

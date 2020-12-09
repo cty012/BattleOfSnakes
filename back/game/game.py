@@ -115,6 +115,12 @@ class Game:
                 if grid not in self.map.apples:
                     self.map.apples.append(grid)
 
+    def toggle_pause(self):
+        if self.timer.is_running():
+            self.timer.stop()
+        else:
+            self.timer.start()
+
     def get_status(self):
         return {
             'map': self.map.get_status(),
@@ -147,4 +153,7 @@ class Game:
                 msg = json.loads(msg_str)
                 if msg['tag'] == 'command':
                     self.execute(player_id, msg['command'])
+                elif msg['tag'] == 'pause':
+                    if player_id == 0:
+                        self.toggle_pause()
         print(f'THREAD ENDS: game.game.receive(player_id={player_id})')

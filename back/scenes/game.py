@@ -1,3 +1,5 @@
+import json
+
 import back.sprites.component as c
 import back.sprites.game as g
 import back.sprites.menus.game_menu as gm
@@ -18,16 +20,12 @@ class Scene:
             return self.execute(self.game_menu.process_events(events))
         for key in events['key-down']:
             if key == 'escape':
-                print('hahaha')
                 self.execute(['pause'])
         return self.execute(self.game.process_events(events))
 
     def execute(self, command):
         if command[0] == 'pause':
-            if self.game_menu.active:
-                self.game.timer.start()
-            else:
-                self.game.timer.stop()
+            self.game.send(json.dumps({'tag': 'pause'}))
             self.game_menu.active = not self.game_menu.active
         elif command[0] == 'close':
             return ['menu']
