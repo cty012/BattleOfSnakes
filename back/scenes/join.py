@@ -96,6 +96,7 @@ class Room:
         # show text
         ui.show_text(utils.add(self.pos, (50, 30)), self.name, f.cambria(25), pan=pan, align=(0, 1))
         ui.show_text(utils.add(self.pos, (50, 80)), self.ip, f.cambria(15), pan=pan, align=(0, 1))
+        ui.show_text(utils.add(self.pos, (150, 80)), str(self.port), f.cambria(15), pan=pan, align=(0, 1))
 
         # show button
         self.join_btn.show(ui, pan=pan)

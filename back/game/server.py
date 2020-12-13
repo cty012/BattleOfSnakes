@@ -17,9 +17,10 @@ class Server:
         # server
         self.ip = '0.0.0.0'
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.port = None
         self.launch_server()
+        print(f'SERVER: using port {self.port}')
         self.mirror = DiscoveryMirror(
             '224.0.3.101', self.ports, b'battleofsnakes', bytes(
                 json.dumps({'name': name, 'port': self.port}), encoding='utf-8'))
