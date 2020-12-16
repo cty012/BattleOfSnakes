@@ -4,6 +4,7 @@ import threading
 
 import back.game.map as m
 import back.game.player as p
+import utils.functions as utils
 import utils.stopwatch as sw
 from utils.parser import Parser
 
@@ -14,12 +15,7 @@ class Game:
         self.clients = clients
 
         self.map = m.Map(dim=self.mode['size'], max_apples=self.mode['max-apples'])
-        init_grids = [
-            [(1, i) for i in range(1, 4)],
-            [(self.mode['size'][0] - 2, self.mode['size'][1] - i - 1) for i in range(1, 4)],
-            [(self.mode['size'][0] - i - 1, 1) for i in range(1, 4)],
-            [(i, self.mode['size'][1] - 2) for i in range(1, 4)]
-        ]
+        init_grids = utils.get_init_grids(self.mode['size'])
         self.players = [
             p.Player(i, grids=init_grids[i])
             for i in range(self.mode['num-players'])

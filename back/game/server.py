@@ -17,6 +17,7 @@ class Server:
         # server
         self.ip = '0.0.0.0'
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.settimeout(0.3)
         # self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.port = None
         self.launch_server()
@@ -62,12 +63,12 @@ class Server:
                     target=self.receive, args=(address[0], client_socket),
                     name=f'server-recv-{address[0]}', daemon=True
                 ).start()
-                self.update_info()
                 print(f'SERVER establish connection to {address[0]}')
             except socket.timeout:
                 pass
             except OSError:
                 print('THREAD ABORTS [OSError]: server.main_loop')
+            self.update_info()
             if self.mode['version'] == 'sing' and len(self.clients) == 1:
                 self.status = 'game'
 
@@ -109,6 +110,7 @@ class Server:
                 msg = json.loads(msg_str)
                 if msg['tag'] == 'quit':
                     self.clients.remove([ip, client_socket])
+                    print(f'THREAD ABORTS: server.receive(ip={ip})')
                     return
                 elif msg['tag'] == 'start-game':
                     self.status = 'game'

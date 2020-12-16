@@ -5,6 +5,7 @@ import threading
 import back.sprites.modules.map as m
 import back.sprites.modules.player as p
 import utils.colors as cl
+import utils.functions as utils
 from utils.parser import Parser
 
 
@@ -20,15 +21,9 @@ class Game:
             self.args, self.args.get_pos(1, 1), dim=self.mode['size'],
             max_apples=self.mode['max-apples'], align=(1, 1))
         player_colors = cl.get_player_colors()
-        init_grids = [
-            [(1, i) for i in range(1, 4)],
-            [(self.mode['size'][0] - 2, self.mode['size'][1] - i - 1) for i in range(1, 4)],
-            [(self.mode['size'][0] - i - 1, 1) for i in range(1, 4)],
-            [(i, self.mode['size'][1] - 2) for i in range(1, 4)]
-        ]
+        init_grids = utils.get_init_grids(self.mode['size'])
         self.players = [p.Player(self.args, i, player_colors[i], init_grids[self.id]) for i in range(self.mode['num-players'])]
         self.map.focus_board(self.players[self.id].head())
-        print(self.players[self.id].head())
 
         # thread
         self.send(json.dumps({'tag': 'start-game'}))

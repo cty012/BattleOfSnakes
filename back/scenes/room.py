@@ -98,6 +98,7 @@ class Scene:
         return [None]
 
     def close(self):
+        self.send(json.dumps({'tag': 'quit'}))
         self.client.close()
         if self.server is not None:
             self.server.close()

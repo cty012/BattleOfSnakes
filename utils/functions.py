@@ -40,6 +40,7 @@ def to_str_time(hundredth_secs, *, connect=(':', ':')):
     decimals = hundredth_secs % 100
     return f'{minutes:02}{connect[0]}{seconds:02}{connect[1]}{decimals:02}'
 
+
 def synchronized(func):
     func.__lock__ = threading.Lock()
 
@@ -48,3 +49,12 @@ def synchronized(func):
             return func(*args, **kws)
 
     return synced_func
+
+
+def get_init_grids(map_size):
+    return [
+        [(1, i) for i in range(1, 4)],
+        [(map_size[0] - 2, map_size[1] - i - 1) for i in range(1, 4)],
+        [(map_size[0] - i - 1, 1) for i in range(1, 4)],
+        [(i, map_size[1] - 2) for i in range(1, 4)]
+    ]
