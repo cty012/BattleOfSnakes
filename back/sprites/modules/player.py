@@ -2,7 +2,7 @@ import utils.functions as utils
 
 
 class Player:
-    def __init__(self, args, id, color, grids=((1, 1), (1, 2), (1, 3))):
+    def __init__(self, args, id, color, grids):
         self.args = args
         self.id = id
         self.color = color

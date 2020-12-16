@@ -3,7 +3,6 @@ import socket
 
 import back.game.server as s
 import back.sprites.component as c
-from network.discovery import DiscoveryBeacon
 import utils.fonts as f
 from utils.parser import Parser
 
